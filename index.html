@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PandaGuesser - Vue.js</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <script type="module" src='./app.js' defer></script>
+    <style>
+      label {
+        display: block;
+      }
+
+      input,
+      button {
+        display: block;
+        margin: 10px 0px;
+      }
+
+      .correct {
+        color: green;
+      }
+
+      .incorrect {
+        color: red;
+      }
+
+      [v-cloak] {
+        display: none;
+      }
+    </style>
+</head>
+<body>
+    <div id="app" v-cloak>
+        <h1>PandaGuesser - Vue.js</h1>
+            <label for="answer">
+                Quelle est la traduction en anglais du mot 
+                <strong> {{ wordA }} </strong> ?
+            </label>
+
+        <input type="text" id="answer" v-model="answer" v-on:keyup="cbAnswer()" v-on:keyup.enter="checkAnswer()" v-bind:style="{ 'background-color': inputBackgroundColor}">
+
+        <p v-if="hasError">Vous devez donner une réponse !</p>
+
+        <label for="showHint">Donner un indice</label>
+        <input type="checkbox" id="showHint" v-model="showHint">
+        <div v-if="showHint">
+            lorem ipsum
+        </div>
+
+        <p v-if="answer != ''">Votre réponse : {{ answer }}</p>
+       
+        <button v-on:click="checkAnswer()">Vérifier votre réponse</button>
+
+        <template v-if="showFeedBack">
+            <img v-bind:src="'http://127.0.0.1:5500/circle-' + circleType + '.png'" v-bind:alt="imageAlt">
+            <p v-if="correct">Bravo ! C'est la bonne réponse !</p>
+            <p v-else>Désolé essayer encore</p>
+            <button v-on:click="reset()">Reset</button>
+        </template>
+
+        First Name <input type="test" v-model="firstname">
+        Last Name <input type="test" v-model="lastname">
+
+        <p>Bonjour {{ fullName }}</p>
+        <p>Bonjour {{ fullName }}</p>
+        <p>Bonjour {{ fullName }}</p>
+        <p>Bonjour {{ getFullName() }}</p>
+        <p>Bonjour {{ getFullName() }}</p>
+        <p>Bonjour {{ getFullName() }}</p>
+
+    </div>
+</body>
+</html>
