@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PandaGuesser - Vue.js</title>
 
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut" href="./faviconvue.png" type="image/x-icon">
     <link rel="stylesheet" href="http://127.0.0.1:5500/assets/css/app.css">
     <script type="module" src="http://127.0.0.1:5500/assets/js/app.js" defer></script>
 </head>
@@ -41,7 +41,7 @@
           </div>
 
         <!-- Alert Box -->
-          <div id="completed" class="completed" v-show="completed">
+          <div id="completed" class="completed" v-show="completed" >
             <div class="alert-box">
               <input type="checkbox" id="success-msg" class="hidden" name="success-msg">
               <label for="success-msg" class="success-msg">
@@ -59,7 +59,7 @@
           <!--Cards Section-->
             <div class="cards">
     
-              <div class="card-item" v-for="word in shuffleWords">
+              <div class="card-item" v-for="(word,index) in shuffleWords" v-bind:key="index">
                 <!-- Card Item-->
                 <div class="card-item-box">
       
@@ -72,8 +72,8 @@
                     </div>
         
                     <div class="card-answer">
-                        <input type="text" name="answer" id="answer" v-model="word.answer" v-on:keyup.enter="validateAnswer(word)" 
-                        v-if="!word.correct">
+                        <input type="text" name="answer" id="answer" v-model="word.answer" 
+                          v-on:keyup.enter="validateAnswer(word)" v-if="!word.correct">
                         <p v-else class ="correct-answer word">{{word.answer}}</p>
                     </div>
     

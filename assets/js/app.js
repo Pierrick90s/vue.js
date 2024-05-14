@@ -26,16 +26,18 @@ const pandaGuesserApp = {
         { wordA: "gris", wordB: "grey", hint: "salutations", answer:"", correct: false, },
         { wordA: "chien", wordB: "dog", hint: "salutations", answer:"", correct: false, },
       ],
+      shuffleWords: [],
       correctCount: 0,
       completed: false,
 
     };
   },
 
+  mounted() {
+    this.shuffleWords = this.words.slice().sort(() => 0.5 - Math.random())
+  },
+
   computed: {
-    shuffleWords() {
-      return this.words.sort(()=> 0.5 - Math.random());
-    },
     wordsCount(){
       return this.words.length;
     },
@@ -48,16 +50,21 @@ const pandaGuesserApp = {
   },
 
   methods: {
-    checkAnswer(word) {
+    validateAnswer(word) {
      word.correct = word.wordB == word.answer;
      if (word.correct) {
       this.correctCount++;
      }
     },
 
-    reset() {
-      this.answer = "";
-      this.showFeedBack = false;
+    restartGame() {
+      this.words.forEach((word) => {
+        word.answer="";
+        word.correct = false;
+      });
+      this.correctCount = 0;
+      this.completed = false;
+      this.shuffleWords = this.shuffleWords = this.words.slice().sort(() => 0.5 - Math.random())
     },
   },
 };
