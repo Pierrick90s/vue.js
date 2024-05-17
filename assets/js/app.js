@@ -21,29 +21,76 @@ const pandaGuesserApp = {
     // Initialiser les variables de données
     return {
       words: [
-        { wordA: "soleil", wordB: "sun", hint: "3 lettres", answer:"", correct: false, },
-        { wordA: "au revoir", wordB: "goodbye", hint: "commence par 'g' fini par 'e'", answer:"", correct: false, },
-        { wordA: "gris", wordB: "grey", hint: "salutations", answer:"", correct: false, },
-        { wordA: "chien", wordB: "dog", hint: "salutations", answer:"", correct: false, },
+        { level:"easy", wordA: "soleil", wordB: "sun", hint: "", answer:"", correct: false, },
+        { level:"easy", wordA: "au revoir", wordB: "goodbye", hint: "", answer:"", correct: false, },
+        { level:"easy", wordA: "voiture", wordB: "car", hint: "", answer:"", correct: false, },
+        { level:"easy", wordA: "fleur", wordB: "flower", hint: "", answer:"", correct: false, },
+        { level:"easy", wordA: "porte", wordB: "door", hint: "", answer:"", correct: false, },
+        { level:"easy", wordA: "table", wordB: "table", hint: "", answer:"", correct: false, },
+        { level:"easy", wordA: "arbre", wordB: "tree", hint: "", answer:"", correct: false, },
+        { level:"easy", wordA: "vache", wordB: "cow", hint: "", answer:"", correct: false, },
+        { level:"intermediate", wordA: "chien", wordB: "dog", hint: "", answer:"", correct: false, },
+        { level:"intermediate", wordA: "maison", wordB: "house", hint: "", answer:"", correct: false, },
+        { level:"intermediate", wordA: "chat", wordB: "cat", hint: "", answer:"", correct: false, },
+        { level:"intermediate", wordA: "tête", wordB: "head", hint: "", answer:"", correct: false, },
+        { level:"intermediate", wordA: "jardin", wordB: "garden", hint: "", answer:"", correct: false, },
+        { level:"intermediate", wordA: "fenêtre", wordB: "window", hint: "", answer:"", correct: false, },
+        { level:"intermediate", wordA: "livre", wordB: "book", hint: "", answer:"", correct: false, },
+        { level:"intermediate", wordA: "ordinateur", wordB: "computer", hint: "", answer:"", correct: false, },
+        { level:"advanced", wordA: "avion", wordB: "plane", hint: "", answer:"", correct: false, },
+        { level:"advanced", wordA: "mouton", wordB: "sheep", hint: "", answer:"", correct: false, },
+        { level:"advanced", wordA: "crayon", wordB: "pencil", hint: "", answer:"", correct: false, },
+        { level:"advanced", wordA: "électricité", wordB: "electricity", hint: "", answer:"", correct: false, },
+        { level:"advanced", wordA: "courageux", wordB: "brave", hint: "", answer:"", correct: false, },
+        { level:"advanced", wordA: "laboratoire", wordB: "laboratory", hint: "", answer:"", correct: false, },
+        { level:"advanced", wordA: "technologie", wordB: "technology", hint: "", answer:"", correct: false, },
+        { level:"advanced", wordA: "dehors", wordB: "outside", hint: "", answer:"", correct: false, },
       ],
+
       shuffleWords: [],
       correctCount: 0,
       completed: false,
-
+      selectedLevel: "", // Initialiser à une chaîne vide
+      levels: ["easy", "intermediate", "advanced"],
     };
   },
 
   mounted() {
-    this.shuffleWords = this.words.slice().sort(() => 0.5 - Math.random())
+    this.selectedLevel = "easy";
+    this.shuffleWords = this.words.slice().sort(() => 0.5 - Math.random()).slice(0, 4);
   },
 
   computed: {
     wordsCount(){
-      return this.words.length;
+      return this.shuffleWords.length;
     },
+
+    filteredWords() {
+      return this.words.filter(word => word.level === this.selectedLevel);
+    },
+
+    levelClass() {
+      switch (this.selectedLevel) {
+        case 'easy':
+          return 'level-easy';
+        case 'intermediate':
+          return 'level-intermediate';
+        case 'advanced':
+          return 'level-advanced';
+        default:
+          return '';
+      }
+    },
+    
   },
 
   watch: {
+    selectedLevel(newLevel) {
+      if (newLevel !== "") {
+        this.shuffleWords = this.filteredWords.slice().sort(() => 0.5 - Math.random()).slice(0, 4);
+        this.restartGame(); // Réinitialiser le jeu chaque fois que le niveau change
+      }
+    },
     correctCount() {
       this.completed = this.correctCount == this.wordsCount;
     },
@@ -51,20 +98,35 @@ const pandaGuesserApp = {
 
   methods: {
     validateAnswer(word) {
-     word.correct = word.wordB == word.answer;
-     if (word.correct) {
-      this.correctCount++;
-     }
-    },
+      if (word) {
+          // Validation d'une seule réponse
+          if (!word.correct && word.wordB === word.answer) {
+              word.correct = true;
+              this.correctCount++;
+          }
+      } else {
+          // Validation de toutes les réponses
+          this.shuffleWords.forEach(word => {
+              if (!word.correct && word.wordB === word.answer) {
+                  word.correct = true;
+                  this.correctCount++;
+              }
+          });
+      }
+  },
 
-    restartGame() {
+  closeNotification() {
+    this.completed = false;
+  },
+
+  restartGame() {
       this.words.forEach((word) => {
-        word.answer="";
+        word.answer = "";
         word.correct = false;
       });
       this.correctCount = 0;
       this.completed = false;
-      this.shuffleWords = this.shuffleWords = this.words.slice().sort(() => 0.5 - Math.random())
+      this.shuffleWords = this.filteredWords.slice().sort(() => 0.5 - Math.random()).slice(0, 4);
     },
   },
 };
